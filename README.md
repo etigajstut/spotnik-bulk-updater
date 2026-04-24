@@ -12,6 +12,75 @@ A monday.com app that allows users to perform bulk status updates on board items
 
 ## Architecture
 
+### System diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FRONTEND  (React + Vite)                      │
+│                                                                   │
+│  ┌─────────────────────────┐   ┌──────────────────────────────┐ │
+│  │   ConfigurationPanel    │   │     ProgressIndicator        │ │
+│  │                         │   │                              │ │
+│  │  • Board selector       │   │  • Polls GET /jobs/:id       │ │
+│  │  • Column selector      │   │    every 1 second            │ │
+│  │    (status only active) │   │  • Shows progress bar        │ │
+│  │  • Filter (optional)    │   │  • Shows processed / total   │ │
+│  │  • Preview item count   │   │  • Shows failed count        │ │
+│  │  • New value selector   │   │  • Cancel button             │ │
+│  │  • Start button         │   │                              │ │
+│  └────────────┬────────────┘   └──────────────┬───────────────┘ │
+│               │                               │                  │
+│               └──────────────┬────────────────┘                  │
+│                          api.js (axios)                          │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │ HTTP
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    BACKEND  (FastAPI)                            │
+│                                                                   │
+│  REST Endpoints                                                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  GET  /boards                 → list boards              │    │
+│  │  GET  /boards/:id/columns     → list columns             │    │
+│  │  POST /preview-count          → count matching items     │    │
+│  │  POST /jobs                   → create job, return id    │    │
+│  │  GET  /jobs/:id               → get job status           │    │
+│  │  POST /jobs/:id/cancel        → request cancellation     │    │
+│  └────────────────────────┬────────────────────────────────┘    │
+│                           │                                       │
+│              ┌────────────┴────────────┐                         │
+│              ▼                         ▼                         │
+│  ┌───────────────────┐    ┌───────────────────────────────────┐  │
+│  │    Job Store      │    │       Background Worker           │  │
+│  │  (in-memory dict) │◄──►│       run_bulk_update()          │  │
+│  │                   │    │                                   │  │
+│  │  • job_id         │    │  1. Fetch page 1 (500 items)      │  │
+│  │  • status         │    │  2. Split into 40-item batches    │  │
+│  │  • total          │    │  3. Run 2 batches in parallel     │  │
+│  │  • processed      │    │  4. Pipeline: fetch next page     │  │
+│  │  • failed         │    │     while updating current        │  │
+│  │  • cancel flag    │    │  5. Retry failed batches (3x)     │  │
+│  └───────────────────┘    │  6. Repeat until all pages done   │  │
+│                           └──────────────┬────────────────────┘  │
+│                                          │                        │
+│                              monday_client.py                     │
+└──────────────────────────────────────────┬──────────────────────┘
+                                           │ GraphQL (HTTPS)
+                                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   monday.com GraphQL API                         │
+│                                                                   │
+│  boards()                    → fetch boards & columns            │
+│  items_page()                → first page, 500 items + cursor    │
+│  next_items_page()           → subsequent pages via cursor       │
+│  change_simple_column_value()→ batch update (40 aliases/request) │
+│                                                                   │
+│  Rate limits handled:                                            │
+│  • HTTP 429        → retry after Retry-After header              │
+│  • Complexity limit → retry after reset_in_x_seconds             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 ### High-volume update approach
 
 The core challenge is updating thousands of items without hitting monday.com's API rate limits or timing out.
