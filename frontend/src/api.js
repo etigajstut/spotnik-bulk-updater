@@ -16,12 +16,13 @@ export const getPreviewCount = (boardId, columnId, filter) =>
         filter
     }).then(res => res.data.count);
 
-export const startBulkUpdate = (boardId, columnId, newValue, filter) =>
+export const startBulkUpdate = (boardId, columnId, newValue, filter, totalHint) =>
     axios.post(`${API_BASE}/jobs`, {
         board_id: Number(boardId),
         column_id: columnId,
         new_value: newValue,
-        filter
+        filter,
+        total_hint: totalHint || null
     }).then(res => res.data);
 
 export const getJobStatus = (jobId) =>

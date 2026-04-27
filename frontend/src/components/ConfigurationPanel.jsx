@@ -85,7 +85,7 @@ export default function ConfigurationPanel({ boards, onStart, activeJobId, conte
     const filter = selectedFilterColumn && selectedFilterValue
       ? { column_id: selectedFilterColumn.value, operator: "any_of", values: [selectedFilterValue.value] }
       : null;
-    onStart(selectedBoard.value, selectedColumn.value, selectedNewValue.label, filter);
+    onStart(selectedBoard.value, selectedColumn.value, selectedNewValue.label, filter, previewCount);
   };
 
   return (

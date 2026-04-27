@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { LinearProgressBar, Text, Box, Button } from "monday-ui-react-core";
-import { getJobStatus } from "../api.js";
+import { getJobStatus, cancelJob } from "../api.js";
+import mondaySdk from "monday-sdk-js";
+
+const monday = mondaySdk();
 
 export default function ProgressIndicator({ jobId, onDone, onClear }) {
   const [status, setStatus] = useState("running");
@@ -21,12 +24,25 @@ export default function ProgressIndicator({ jobId, onDone, onClear }) {
             setTotal(data.total || 1);
 
             const isFinished = data.status === "succeeded" || data.status === "failed" ||
+                              data.status === "canceled" ||
                               (data.processed > 0 && data.processed >= data.total);
 
             if (isFinished) {
-              setStatus(data.status === "failed" ? "failed" : "completed");
+              const finalStatus = data.status === "failed" ? "failed" : data.status === "canceled" ? "canceled" : "completed";
+              setStatus(finalStatus);
               clearInterval(interval);
-              onDone && onDone(data.status === "failed" ? "failed" : "completed");
+              onDone && onDone(finalStatus);
+
+              // Show a native monday.com notification when running inside the platform
+              if (finalStatus === "completed") {
+                monday.execute("notice", {
+                  message: data.failed > 0
+                    ? `Bulk update done — ${data.processed} updated, ${data.failed} failed.`
+                    : `Bulk update complete — ${data.processed} items updated successfully!`,
+                  type: data.failed > 0 ? "error" : "success",
+                  timeout: 7000
+                });
+              }
             } else {
               setStatus(data.status || "running");
             }
@@ -57,6 +73,22 @@ export default function ProgressIndicator({ jobId, onDone, onClear }) {
         {processed} / {total} Completed ({percentage}%)
         {failed > 0 && ` · ${failed} failed`}
       </Text>
+
+      {status === "running" && (
+        <Button
+          onClick={() => cancelJob(jobId)}
+          kind="secondary"
+          size={Button.sizes.SMALL}>
+          Cancel
+        </Button>
+      )}
+
+      {status === "canceled" && (
+        <Box style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", marginTop: "10px" }}>
+          <Text color="secondary">Update cancelled.</Text>
+          <Button onClick={onClear} kind="secondary">Clear & Start New Update</Button>
+        </Box>
+      )}
 
       {status === "completed" && (
         <Box style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", marginTop: "10px" }}>

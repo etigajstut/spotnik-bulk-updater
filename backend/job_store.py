@@ -18,7 +18,7 @@ class JobStore:
     def __init__(self):
         self._jobs = {}
 
-    def create_job(self, board_id: int, column_id: str, new_value: str, filter: Optional[dict] = None) -> dict:
+    def create_job(self, board_id: int, column_id: str, new_value: str, filter: Optional[dict] = None, total_hint: Optional[int] = None) -> dict:
         job_id = str(uuid.uuid4())
         job = {
             "id": job_id,
@@ -27,7 +27,7 @@ class JobStore:
             "new_value": new_value,
             "filter": filter,
             "status": JobStatus.QUEUED,
-            "total": 0,
+            "total": total_hint or 0,
             "processed": 0,
             "failed": 0,
             "cancel_requested": False,

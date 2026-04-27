@@ -34,9 +34,9 @@ export default function App() {
       });
   }, []);
 
-  const handleStartUpdate = async (boardId, columnId, newValue, filter) => {
+  const handleStartUpdate = async (boardId, columnId, newValue, filter, totalHint) => {
     try {
-      const response = await startBulkUpdate(boardId, columnId, newValue, filter);
+      const response = await startBulkUpdate(boardId, columnId, newValue, filter, totalHint);
       setActiveJobId(response.job_id);
     } catch (err) {
       console.error("Failed to start bulk update", err);

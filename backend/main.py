@@ -25,6 +25,7 @@ class StartJobRequest(BaseModel):
     column_id: str
     new_value: str
     filter: Optional[dict] = None
+    total_hint: Optional[int] = None
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -63,7 +64,8 @@ async def start_job(req: StartJobRequest, background_tasks: BackgroundTasks):
         board_id=req.board_id,
         column_id=req.column_id,
         new_value=req.new_value,
-        filter=req.filter
+        filter=req.filter,
+        total_hint=req.total_hint
     )
     background_tasks.add_task(run_bulk_update, job["id"])
     return {"job_id": job["id"]}
@@ -108,8 +110,9 @@ async def run_bulk_update(job_id: str):
     job_store.update_job(job_id, status=JobStatus.RUNNING)
 
     total = 0
+    has_total_hint = job["total"] > 0  # total already set from preview count
 
-    # 2 concurrent batches of 40 items — fastest config without triggering 429s
+    # 2 concurrent batches of 40 items — fewest rate limit hits, reliable performance
     semaphore = asyncio.Semaphore(2)
 
     async def process_batch(batch):
@@ -132,7 +135,7 @@ async def run_bulk_update(job_id: str):
 
     async def process_page(items):
         """Update all batches in a page, 2 at a time."""
-        batches = [items[i:i + 40] for i in range(0, len(items), 40)]
+        batches = [items[i:i + 50] for i in range(0, len(items), 50)]
         await asyncio.gather(*[process_batch(b) for b in batches])
 
     try:
@@ -155,7 +158,8 @@ async def run_bulk_update(job_id: str):
                 return
 
             total += len(items)
-            job_store.update_job(job_id, total=total)
+            if not has_total_hint:
+                job_store.update_job(job_id, total=total)
 
             if cursor:
                 # Pipeline: fetch next page and update current page simultaneously

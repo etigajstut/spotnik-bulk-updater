@@ -55,7 +55,7 @@ A monday.com app that allows users to perform bulk status updates on board items
 │  │  (in-memory dict) │◄──►│       run_bulk_update()          │  │
 │  │                   │    │                                   │  │
 │  │  • job_id         │    │  1. Fetch page 1 (500 items)      │  │
-│  │  • status         │    │  2. Split into 40-item batches    │  │
+│  │  • status         │    │  2. Split into 50-item batches    │  │
 │  │  • total          │    │  3. Run 2 batches in parallel     │  │
 │  │  • processed      │    │  4. Pipeline: fetch next page     │  │
 │  │  • failed         │    │     while updating current        │  │
@@ -73,7 +73,7 @@ A monday.com app that allows users to perform bulk status updates on board items
 │  boards()                    → fetch boards & columns            │
 │  items_page()                → first page, 500 items + cursor    │
 │  next_items_page()           → subsequent pages via cursor       │
-│  change_simple_column_value()→ batch update (40 aliases/request) │
+│  change_simple_column_value()→ batch update (50 aliases/request) │
 │                                                                   │
 │  Rate limits handled:                                            │
 │  • HTTP 429        → retry after Retry-After header              │
@@ -90,14 +90,14 @@ The solution is a **chunked async processing loop**:
 1. When the user clicks "Start", the backend creates a job record immediately and returns a `job_id` to the frontend — the HTTP request returns in milliseconds.
 2. A background task starts processing in the background.
 3. Items are fetched in pages of 500 using cursor-based pagination (`items_page` + `next_items_page`).
-4. Each page is split into batches of 40 items, each batch sent as a single aliased GraphQL mutation.
+4. Each page is split into batches of 50 items, each batch sent as a single aliased GraphQL mutation.
 5. An `asyncio.Semaphore(2)` allows up to 2 batches to run in parallel — enough to roughly double throughput without triggering monday's HTTP 429 rate limits.
 6. Progress is updated in memory after each batch.
 7. The frontend polls `GET /jobs/{id}` every second to show real-time progress.
 
 ### GraphQL optimizations
 
-- **Batching**: 40 mutations are sent in a single aliased GraphQL request, reducing API calls dramatically compared to one mutation per item.
+- **Batching**: 50 mutations are sent in a single aliased GraphQL request, reducing API calls dramatically compared to one mutation per item.
 - **Cursor pagination**: Items are fetched page by page using cursors, avoiding memory issues with large boards.
 - **Minimal fields**: Item queries only request `id` — no unnecessary data transferred.
 - **Complexity tracking**: The `complexity` node is included in mutations to monitor the API budget. If the budget is exhausted, the client sleeps for the required reset time before retrying.

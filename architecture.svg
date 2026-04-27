@@ -1,0 +1,145 @@
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="900" height="700" fill="#f5f6fa" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" font-size="20" font-weight="bold" fill="#1f2d3d">Spotnik Bulk Status Updater — System Architecture</text>
+
+  <!-- ───── FRONTEND BOX ───── -->
+  <rect x="30" y="60" width="260" height="340" rx="10" fill="#e8f0fe" stroke="#4a7ae8" stroke-width="2"/>
+  <rect x="30" y="60" width="260" height="36" rx="10" fill="#4a7ae8"/>
+  <rect x="30" y="84" width="260" height="12" fill="#4a7ae8"/>
+  <text x="160" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Frontend (React + Vite)</text>
+
+  <!-- monday-sdk-js -->
+  <rect x="50" y="108" width="220" height="36" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="124" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">monday-sdk-js</text>
+  <text x="160" y="137" text-anchor="middle" font-size="10" fill="#555">Board context detection</text>
+
+  <!-- ConfigurationPanel -->
+  <rect x="50" y="158" width="220" height="90" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="174" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">ConfigurationPanel</text>
+  <text x="160" y="189" text-anchor="middle" font-size="10" fill="#555">• Board / Column selector</text>
+  <text x="160" y="203" text-anchor="middle" font-size="10" fill="#555">• Filter (optional)</text>
+  <text x="160" y="217" text-anchor="middle" font-size="10" fill="#555">• Preview item count</text>
+  <text x="160" y="231" text-anchor="middle" font-size="10" fill="#555">• New value + Start button</text>
+
+  <!-- ProgressIndicator -->
+  <rect x="50" y="262" width="220" height="76" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="278" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">ProgressIndicator</text>
+  <text x="160" y="293" text-anchor="middle" font-size="10" fill="#555">• Polls /jobs/:id every 1s</text>
+  <text x="160" y="307" text-anchor="middle" font-size="10" fill="#555">• Real-time progress bar</text>
+  <text x="160" y="321" text-anchor="middle" font-size="10" fill="#555">• Processed / failed counts</text>
+
+  <!-- api.js -->
+  <rect x="50" y="352" width="220" height="34" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="373" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">api.js (axios)</text>
+
+  <!-- ───── BACKEND BOX ───── -->
+  <rect x="330" y="60" width="280" height="480" rx="10" fill="#e6f9f0" stroke="#27ae60" stroke-width="2"/>
+  <rect x="330" y="60" width="280" height="36" rx="10" fill="#27ae60"/>
+  <rect x="330" y="84" width="280" height="12" fill="#27ae60"/>
+  <text x="470" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Backend (Python + FastAPI)</text>
+
+  <!-- REST Endpoints -->
+  <rect x="350" y="108" width="240" height="130" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
+  <text x="470" y="124" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">REST Endpoints</text>
+  <text x="370" y="139" font-size="10" fill="#555">GET  /boards</text>
+  <text x="370" y="153" font-size="10" fill="#555">GET  /boards/:id/columns</text>
+  <text x="370" y="167" font-size="10" fill="#555">POST /preview-count</text>
+  <text x="370" y="181" font-size="10" fill="#555">POST /jobs  → returns job_id instantly</text>
+  <text x="370" y="195" font-size="10" fill="#555">GET  /jobs/:id</text>
+  <text x="370" y="209" font-size="10" fill="#555">POST /jobs/:id/cancel</text>
+
+  <!-- Job Store -->
+  <rect x="350" y="252" width="110" height="120" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
+  <text x="405" y="268" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">Job Store</text>
+  <text x="405" y="282" text-anchor="middle" font-size="10" fill="#888">(in-memory)</text>
+  <text x="365" y="297" font-size="10" fill="#555">• status</text>
+  <text x="365" y="311" font-size="10" fill="#555">• total</text>
+  <text x="365" y="325" font-size="10" fill="#555">• processed</text>
+  <text x="365" y="339" font-size="10" fill="#555">• failed</text>
+  <text x="365" y="353" font-size="10" fill="#555">• cancel flag</text>
+
+  <!-- Background Worker -->
+  <rect x="470" y="252" width="120" height="180" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
+  <text x="530" y="268" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">Background</text>
+  <text x="530" y="281" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">Worker</text>
+  <text x="480" y="298" font-size="10" fill="#555">1. Fetch page</text>
+  <text x="480" y="312" font-size="10" fill="#555">   (500 items)</text>
+  <text x="480" y="326" font-size="10" fill="#555">2. Batch (50)</text>
+  <text x="480" y="340" font-size="10" fill="#555">3. 2 parallel</text>
+  <text x="480" y="354" font-size="10" fill="#555">4. Pipeline</text>
+  <text x="480" y="368" font-size="10" fill="#555">5. Retry (3x)</text>
+  <text x="480" y="382" font-size="10" fill="#555">6. Next page</text>
+  <text x="480" y="396" font-size="10" fill="#555">7. Repeat</text>
+
+  <!-- monday_client -->
+  <rect x="350" y="446" width="240" height="76" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
+  <text x="470" y="462" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">monday_client.py</text>
+  <text x="470" y="477" text-anchor="middle" font-size="10" fill="#555">• GraphQL query builder</text>
+  <text x="470" y="491" font-size="10" fill="#555" x="370">• 429 retry (Retry-After header)</text>
+  <text x="370" y="491" font-size="10" fill="#555">• 429 retry (Retry-After header)</text>
+  <text x="370" y="505" font-size="10" fill="#555">• Complexity retry (reset_in_x_seconds)</text>
+
+  <!-- ───── MONDAY API BOX ───── -->
+  <rect x="650" y="60" width="220" height="340" rx="10" fill="#fef3e8" stroke="#e67e22" stroke-width="2"/>
+  <rect x="650" y="60" width="220" height="36" rx="10" fill="#e67e22"/>
+  <rect x="650" y="84" width="220" height="12" fill="#e67e22"/>
+  <text x="760" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="white">monday.com API</text>
+
+  <rect x="668" y="108" width="184" height="42" rx="6" fill="#fff" stroke="#e67e22" stroke-width="1.2"/>
+  <text x="760" y="124" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">boards()</text>
+  <text x="760" y="139" text-anchor="middle" font-size="10" fill="#555">Fetch boards &amp; columns</text>
+
+  <rect x="668" y="162" width="184" height="58" rx="6" fill="#fff" stroke="#e67e22" stroke-width="1.2"/>
+  <text x="760" y="178" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">items_page()</text>
+  <text x="760" y="193" text-anchor="middle" font-size="10" fill="#555">First page, 500 items</text>
+  <text x="760" y="207" text-anchor="middle" font-size="10" fill="#555">+ cursor for next page</text>
+
+  <rect x="668" y="232" width="184" height="42" rx="6" fill="#fff" stroke="#e67e22" stroke-width="1.2"/>
+  <text x="760" y="248" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">next_items_page()</text>
+  <text x="760" y="263" text-anchor="middle" font-size="10" fill="#555">Subsequent pages via cursor</text>
+
+  <rect x="668" y="286" width="184" height="58" rx="6" fill="#fff" stroke="#e67e22" stroke-width="1.2"/>
+  <text x="760" y="302" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">change_simple_column_</text>
+  <text x="760" y="316" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">value() × 50</text>
+  <text x="760" y="331" text-anchor="middle" font-size="10" fill="#555">Aliased batch mutations</text>
+
+  <!-- ───── ARROWS ───── -->
+
+  <!-- Frontend api.js → Backend -->
+  <line x1="290" y1="369" x2="330" y2="369" stroke="#4a7ae8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="310" y="362" text-anchor="middle" font-size="9" fill="#4a7ae8">HTTP</text>
+
+  <!-- Backend → monday API -->
+  <line x1="610" y1="280" x2="650" y2="280" stroke="#27ae60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <text x="630" y="273" text-anchor="middle" font-size="9" fill="#27ae60">GraphQL</text>
+
+  <!-- Job Store ↔ Worker -->
+  <line x1="460" y1="310" x2="470" y2="310" stroke="#27ae60" stroke-width="1.5" marker-end="url(#arrowGreen)" marker-start="url(#arrowGreenR)"/>
+
+  <!-- ───── LEGEND ───── -->
+  <rect x="30" y="430" width="260" height="110" rx="8" fill="#fff" stroke="#ccc" stroke-width="1.2"/>
+  <text x="160" y="448" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Key flows</text>
+  <text x="44" y="466" font-size="10" fill="#555">1. User configures → preview count shown</text>
+  <text x="44" y="481" font-size="10" fill="#555">2. Start → job_id returned in ms</text>
+  <text x="44" y="496" font-size="10" fill="#555">3. Worker paginates &amp; batches mutations</text>
+  <text x="44" y="511" font-size="10" fill="#555">4. Pipeline: fetch page N+1 while updating N</text>
+  <text x="44" y="526" font-size="10" fill="#555">5. Frontend polls every 1s → live progress</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#4a7ae8"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#27ae60"/>
+    </marker>
+    <marker id="arrowGreenR" markerWidth="8" markerHeight="8" refX="2" refY="3" orient="auto-start-reverse">
+      <path d="M0,0 L0,6 L8,3 z" fill="#27ae60"/>
+    </marker>
+  </defs>
+
+</svg>
