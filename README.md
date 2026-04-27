@@ -124,6 +124,13 @@ The solution is a **chunked async processing loop**:
 - **Backend**: Python + FastAPI + httpx
 - **API**: monday.com GraphQL API v2
 
+## Branches
+
+| Branch | Description |
+|--------|-------------|
+| `main` | Local / self-hosted version. Job state stored in-memory. Run backend with uvicorn, frontend with Vite. |
+| `monday-code` | monday-code hosted version. Job state persisted via monday-code Storage API. Deploy with `mapps code:push`. |
+
 ## How to run locally
 
 ### Backend
@@ -154,6 +161,48 @@ npm run dev
 ```
 
 Open `http://localhost:5174`
+
+## How to deploy to monday-code (bonus)
+
+> Switch to the `monday-code` branch first: `git checkout monday-code`
+
+### Prerequisites
+- [monday apps CLI](https://developer.monday.com/apps/docs/command-line-interface-cli): `npm install -g @mondaycom/apps-cli`
+- A monday.com developer account with an app created in the Developer Center
+
+### Backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+Set the API key via the CLI (no `.env` file needed on monday-code):
+```bash
+mapps code:env:set MONDAY_API_KEY=your_key_here
+```
+
+### Frontend
+
+Set the backend URL (obtained after first deploy) and build:
+```bash
+cd frontend
+VITE_API_BASE=https://YOUR_MONDAY_CODE_BACKEND_URL npm run build
+```
+
+### Deploy
+```bash
+mapps code:push
+```
+
+### What changes in the monday-code branch
+
+| | `main` (localhost) | `monday-code` |
+|--|--|--|
+| Job state | In-memory Python dict | monday-code Storage API |
+| job_store.py | Synchronous class | Async module functions |
+| API URL | `http://localhost:8001` | `VITE_API_BASE` env variable |
+| Dependencies | `requirements.txt` not needed | `requirements.txt` required |
 
 ## How I used AI tools
 

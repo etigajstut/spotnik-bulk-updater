@@ -10,7 +10,7 @@ MONDAY_API_URL = "https://api.monday.com/v2"
 MONDAY_API_KEY = os.getenv("MONDAY_API_KEY")
 
 if not MONDAY_API_KEY:
-    raise RuntimeError("MONDAY_API_KEY is not set in .env file.")
+    print("WARNING: MONDAY_API_KEY is not set. API calls will fail.")
 
 HEADERS = {
     "Authorization": MONDAY_API_KEY,

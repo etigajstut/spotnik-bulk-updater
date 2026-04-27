@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8001';
+// In development: http://localhost:8001
+// In monday-code: set VITE_API_BASE to the deployed backend URL before building
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8001';
 
 export const getBoards = () =>
     axios.get(`${API_BASE}/boards`).then(res => res.data);

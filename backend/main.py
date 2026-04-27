@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from typing import Optional
 from dotenv import load_dotenv
 
-from job_store import job_store, JobStatus
+from job_store import create_job, get_job, update_job, JobStatus
 from monday_client import get_boards, get_columns, get_items_page, update_items_batch
 
 load_dotenv()
@@ -60,7 +60,7 @@ async def preview_count(req: StartJobRequest):
 @app.post("/jobs")
 async def start_job(req: StartJobRequest, background_tasks: BackgroundTasks):
     """Create a job and start processing in the background. Returns job_id immediately."""
-    job = job_store.create_job(
+    job = await create_job(
         board_id=req.board_id,
         column_id=req.column_id,
         new_value=req.new_value,
@@ -72,8 +72,8 @@ async def start_job(req: StartJobRequest, background_tasks: BackgroundTasks):
 
 
 @app.get("/jobs/{job_id}")
-async def get_job(job_id: str):
-    job = job_store.get_job(job_id)
+async def get_job_status(job_id: str):
+    job = await get_job(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
@@ -81,10 +81,10 @@ async def get_job(job_id: str):
 
 @app.post("/jobs/{job_id}/cancel")
 async def cancel_job(job_id: str):
-    job = job_store.get_job(job_id)
+    job = await get_job(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
-    job_store.update_job(job_id, cancel_requested=True)
+    await update_job(job_id, cancel_requested=True)
     return {"status": "cancel requested"}
 
 
@@ -96,23 +96,23 @@ async def run_bulk_update(job_id: str):
 
     Flow:
     1. Fetch items in pages of 500 (cursor pagination)
-    2. Split each page into batches of 40 items
+    2. Split each page into batches of 50 items
     3. Run up to 2 batches in parallel (semaphore) to stay within monday's rate limits
     4. Pipeline: fetch the next page while updating the current one
     5. Check for cancellation between pages
     6. Each batch retries up to 3 times on error before giving up
     """
-    job = job_store.get_job(job_id)
+    job = await get_job(job_id)
     board_id = job["board_id"]
     column_id = job["column_id"]
     new_value = job["new_value"]
 
-    job_store.update_job(job_id, status=JobStatus.RUNNING)
+    await update_job(job_id, status=JobStatus.RUNNING)
 
     total = 0
     has_total_hint = job["total"] > 0  # total already set from preview count
 
-    # 2 concurrent batches of 40 items — fewest rate limit hits, reliable performance
+    # 2 concurrent batches of 50 items — fewest rate limit hits, reliable performance
     semaphore = asyncio.Semaphore(2)
 
     async def process_batch(batch):
@@ -121,8 +121,8 @@ async def run_bulk_update(job_id: str):
             for attempt in range(3):
                 try:
                     await update_items_batch(board_id, item_ids, column_id, new_value)
-                    current = job_store.get_job(job_id)["processed"]
-                    job_store.update_job(job_id, processed=current + len(batch))
+                    current = (await get_job(job_id))["processed"]
+                    await update_job(job_id, processed=current + len(batch))
                     return
                 except Exception as e:
                     wait = 10 * (2 ** attempt)  # 10s, 20s, 40s
@@ -130,8 +130,8 @@ async def run_bulk_update(job_id: str):
                     await asyncio.sleep(wait)
             # All 3 attempts failed — move on
             print(f"Batch permanently failed after 3 attempts.")
-            current_failed = job_store.get_job(job_id)["failed"]
-            job_store.update_job(job_id, failed=current_failed + len(batch))
+            current_failed = (await get_job(job_id))["failed"]
+            await update_job(job_id, failed=current_failed + len(batch))
 
     async def process_page(items):
         """Update all batches in a page, 2 at a time."""
@@ -153,13 +153,13 @@ async def run_bulk_update(job_id: str):
                 break
 
             # Check for cancellation between pages
-            if job_store.get_job(job_id)["cancel_requested"]:
-                job_store.update_job(job_id, status=JobStatus.CANCELED)
+            if (await get_job(job_id))["cancel_requested"]:
+                await update_job(job_id, status=JobStatus.CANCELED)
                 return
 
             total += len(items)
             if not has_total_hint:
-                job_store.update_job(job_id, total=total)
+                await update_job(job_id, total=total)
 
             if cursor:
                 # Pipeline: fetch next page and update current page simultaneously
@@ -175,9 +175,9 @@ async def run_bulk_update(job_id: str):
                 await process_page(items)
                 break
 
-        job_store.update_job(job_id, status=JobStatus.SUCCEEDED)
+        await update_job(job_id, status=JobStatus.SUCCEEDED)
         print(f"Job {job_id} completed. {total} items processed.")
 
     except Exception as e:
         print(f"Job {job_id} failed: {e}")
-        job_store.update_job(job_id, status=JobStatus.FAILED)
+        await update_job(job_id, status=JobStatus.FAILED)
