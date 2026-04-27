@@ -26,6 +26,7 @@ class StartJobRequest(BaseModel):
     new_value: str
     filter: Optional[dict] = None
     total_hint: Optional[int] = None
+    session_token: Optional[str] = None  # monday session token for Storage API auth
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -65,7 +66,8 @@ async def start_job(req: StartJobRequest, background_tasks: BackgroundTasks):
         column_id=req.column_id,
         new_value=req.new_value,
         filter=req.filter,
-        total_hint=req.total_hint
+        total_hint=req.total_hint,
+        session_token=req.session_token
     )
     background_tasks.add_task(run_bulk_update, job["id"])
     return {"job_id": job["id"]}
