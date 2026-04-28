@@ -1,7 +1,7 @@
-<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+<svg width="900" height="860" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
 
   <!-- Background -->
-  <rect width="900" height="700" fill="#f5f6fa" rx="12"/>
+  <rect width="900" height="860" fill="#f5f6fa" rx="12"/>
 
   <!-- Title -->
   <text x="450" y="38" text-anchor="middle" font-size="20" font-weight="bold" fill="#1f2d3d">Spotnik Bulk Status Updater — System Architecture</text>
@@ -13,28 +13,29 @@
   <text x="160" y="84" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Frontend (React + Vite)</text>
 
   <!-- monday-sdk-js -->
-  <rect x="50" y="108" width="220" height="36" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <rect x="50" y="108" width="220" height="50" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
   <text x="160" y="124" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">monday-sdk-js</text>
-  <text x="160" y="137" text-anchor="middle" font-size="10" fill="#555">Board context detection</text>
+  <text x="160" y="139" text-anchor="middle" font-size="10" fill="#555">Board context detection</text>
+  <text x="160" y="152" text-anchor="middle" font-size="10" fill="#555">Session token for Storage API</text>
 
   <!-- ConfigurationPanel -->
-  <rect x="50" y="158" width="220" height="90" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
-  <text x="160" y="174" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">ConfigurationPanel</text>
-  <text x="160" y="189" text-anchor="middle" font-size="10" fill="#555">• Board / Column selector</text>
-  <text x="160" y="203" text-anchor="middle" font-size="10" fill="#555">• Filter (optional)</text>
-  <text x="160" y="217" text-anchor="middle" font-size="10" fill="#555">• Preview item count</text>
-  <text x="160" y="231" text-anchor="middle" font-size="10" fill="#555">• New value + Start button</text>
+  <rect x="50" y="172" width="220" height="90" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="188" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">ConfigurationPanel</text>
+  <text x="160" y="203" text-anchor="middle" font-size="10" fill="#555">• Board / Column selector</text>
+  <text x="160" y="217" text-anchor="middle" font-size="10" fill="#555">• Filter (optional)</text>
+  <text x="160" y="231" text-anchor="middle" font-size="10" fill="#555">• Preview item count</text>
+  <text x="160" y="245" text-anchor="middle" font-size="10" fill="#555">• New value + Start button</text>
 
   <!-- ProgressIndicator -->
-  <rect x="50" y="262" width="220" height="76" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
-  <text x="160" y="278" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">ProgressIndicator</text>
-  <text x="160" y="293" text-anchor="middle" font-size="10" fill="#555">• Polls /jobs/:id every 1s</text>
-  <text x="160" y="307" text-anchor="middle" font-size="10" fill="#555">• Real-time progress bar</text>
-  <text x="160" y="321" text-anchor="middle" font-size="10" fill="#555">• Processed / failed counts</text>
+  <rect x="50" y="276" width="220" height="76" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="292" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">ProgressIndicator</text>
+  <text x="160" y="307" text-anchor="middle" font-size="10" fill="#555">• Polls /jobs/:id every 1s</text>
+  <text x="160" y="321" text-anchor="middle" font-size="10" fill="#555">• Real-time progress bar</text>
+  <text x="160" y="335" text-anchor="middle" font-size="10" fill="#555">• Processed / failed counts</text>
 
   <!-- api.js -->
-  <rect x="50" y="352" width="220" height="34" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
-  <text x="160" y="373" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">api.js (axios)</text>
+  <rect x="50" y="366" width="220" height="20" rx="6" fill="#fff" stroke="#4a7ae8" stroke-width="1.2"/>
+  <text x="160" y="380" text-anchor="middle" font-size="11" font-weight="bold" fill="#4a7ae8">api.js (axios)</text>
 
   <!-- ───── BACKEND BOX ───── -->
   <rect x="330" y="60" width="280" height="480" rx="10" fill="#e6f9f0" stroke="#27ae60" stroke-width="2"/>
@@ -53,14 +54,15 @@
   <text x="370" y="209" font-size="10" fill="#555">POST /jobs/:id/cancel</text>
 
   <!-- Job Store -->
-  <rect x="350" y="252" width="110" height="120" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
+  <rect x="350" y="252" width="110" height="136" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
   <text x="405" y="268" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">Job Store</text>
-  <text x="405" y="282" text-anchor="middle" font-size="10" fill="#888">(in-memory)</text>
-  <text x="365" y="297" font-size="10" fill="#555">• status</text>
-  <text x="365" y="311" font-size="10" fill="#555">• total</text>
-  <text x="365" y="325" font-size="10" fill="#555">• processed</text>
-  <text x="365" y="339" font-size="10" fill="#555">• failed</text>
-  <text x="365" y="353" font-size="10" fill="#555">• cancel flag</text>
+  <text x="405" y="282" text-anchor="middle" font-size="10" fill="#888">(Storage API /</text>
+  <text x="405" y="294" text-anchor="middle" font-size="10" fill="#888">in-memory)</text>
+  <text x="365" y="309" font-size="10" fill="#555">• status</text>
+  <text x="365" y="323" font-size="10" fill="#555">• total / processed</text>
+  <text x="365" y="337" font-size="10" fill="#555">• failed</text>
+  <text x="365" y="351" font-size="10" fill="#555">• cancel flag</text>
+  <text x="365" y="365" font-size="10" fill="#555">• session_token</text>
 
   <!-- Background Worker -->
   <rect x="470" y="252" width="120" height="180" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
@@ -78,8 +80,7 @@
   <!-- monday_client -->
   <rect x="350" y="446" width="240" height="76" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.2"/>
   <text x="470" y="462" text-anchor="middle" font-size="11" font-weight="bold" fill="#27ae60">monday_client.py</text>
-  <text x="470" y="477" text-anchor="middle" font-size="10" fill="#555">• GraphQL query builder</text>
-  <text x="470" y="491" font-size="10" fill="#555" x="370">• 429 retry (Retry-After header)</text>
+  <text x="370" y="477" font-size="10" fill="#555">• GraphQL query builder</text>
   <text x="370" y="491" font-size="10" fill="#555">• 429 retry (Retry-After header)</text>
   <text x="370" y="505" font-size="10" fill="#555">• Complexity retry (reset_in_x_seconds)</text>
 
@@ -107,27 +108,73 @@
   <text x="760" y="316" text-anchor="middle" font-size="11" font-weight="bold" fill="#e67e22">value() × 50</text>
   <text x="760" y="331" text-anchor="middle" font-size="10" fill="#555">Aliased batch mutations</text>
 
+  <!-- ───── MONDAY CODE HOSTING LAYER ───── -->
+  <rect x="20" y="570" width="860" height="270" rx="12" fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="8,4"/>
+  <rect x="36" y="562" width="190" height="20" rx="4" fill="#f5f6fa"/>
+  <text x="131" y="576" text-anchor="middle" font-size="12" font-weight="bold" fill="#9b59b6">monday-code hosting (bonus)</text>
+
+  <!-- CDN box -->
+  <rect x="40" y="590" width="200" height="90" rx="10" fill="#ede7f6" stroke="#9b59b6" stroke-width="1.5"/>
+  <rect x="40" y="590" width="200" height="28" rx="10" fill="#9b59b6"/>
+  <rect x="40" y="606" width="200" height="12" fill="#9b59b6"/>
+  <text x="140" y="608" text-anchor="middle" font-size="11" font-weight="bold" fill="white">monday CDN</text>
+  <text x="140" y="632" text-anchor="middle" font-size="10" fill="#555">Serves built React app</text>
+  <text x="140" y="646" text-anchor="middle" font-size="10" fill="#6a0dad">v829e82d655cf17e9</text>
+  <text x="140" y="660" text-anchor="middle" font-size="10" fill="#6a0dad">.cdn2.monday.app</text>
+
+  <!-- Backend hosting box -->
+  <rect x="270" y="590" width="340" height="90" rx="10" fill="#ede7f6" stroke="#9b59b6" stroke-width="1.5"/>
+  <rect x="270" y="590" width="340" height="28" rx="10" fill="#9b59b6"/>
+  <rect x="270" y="606" width="340" height="12" fill="#9b59b6"/>
+  <text x="440" y="608" text-anchor="middle" font-size="11" font-weight="bold" fill="white">monday-code Server (port 8080)</text>
+  <text x="440" y="632" text-anchor="middle" font-size="10" fill="#555">FastAPI + uvicorn · Procfile · requirements.txt</text>
+  <text x="440" y="646" text-anchor="middle" font-size="10" fill="#6a0dad">f0247-service-34752368-ffe119be.us.monday.app</text>
+  <text x="440" y="660" text-anchor="middle" font-size="10" fill="#555">API key via mapps code:env</text>
+
+  <!-- Storage API box -->
+  <rect x="640" y="590" width="220" height="90" rx="10" fill="#ede7f6" stroke="#9b59b6" stroke-width="1.5"/>
+  <rect x="640" y="590" width="220" height="28" rx="10" fill="#9b59b6"/>
+  <rect x="640" y="606" width="220" height="12" fill="#9b59b6"/>
+  <text x="750" y="608" text-anchor="middle" font-size="11" font-weight="bold" fill="white">monday-code Storage API</text>
+  <text x="750" y="632" text-anchor="middle" font-size="10" fill="#555">Persistent key-value store</text>
+  <text x="750" y="646" text-anchor="middle" font-size="10" fill="#555">Proxy: localhost:59999</text>
+  <text x="750" y="660" text-anchor="middle" font-size="10" fill="#555">Auth: session token (JWT)</text>
+
+  <!-- Storage API detail -->
+  <rect x="640" y="695" width="220" height="110" rx="8" fill="#f3e5f5" stroke="#9b59b6" stroke-width="1.2"/>
+  <text x="750" y="712" text-anchor="middle" font-size="10" font-weight="bold" fill="#6a0dad">How it works</text>
+  <text x="650" y="728" font-size="9" fill="#555">1. Frontend gets sessionToken</text>
+  <text x="650" y="741" font-size="9" fill="#555">   via monday.get('sessionToken')</text>
+  <text x="650" y="754" font-size="9" fill="#555">2. Sent with POST /jobs</text>
+  <text x="650" y="767" font-size="9" fill="#555">3. Cached in _token_cache</text>
+  <text x="650" y="780" font-size="9" fill="#555">4. Background worker uses it</text>
+  <text x="650" y="793" font-size="9" fill="#555">   for all Storage reads/writes</text>
+
   <!-- ───── ARROWS ───── -->
 
   <!-- Frontend api.js → Backend -->
-  <line x1="290" y1="369" x2="330" y2="369" stroke="#4a7ae8" stroke-width="2" marker-end="url(#arrowBlue)"/>
-  <text x="310" y="362" text-anchor="middle" font-size="9" fill="#4a7ae8">HTTP</text>
+  <line x1="290" y1="376" x2="330" y2="376" stroke="#4a7ae8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="310" y="369" text-anchor="middle" font-size="9" fill="#4a7ae8">HTTP</text>
 
   <!-- Backend → monday API -->
   <line x1="610" y1="280" x2="650" y2="280" stroke="#27ae60" stroke-width="2" marker-end="url(#arrowGreen)"/>
   <text x="630" y="273" text-anchor="middle" font-size="9" fill="#27ae60">GraphQL</text>
 
   <!-- Job Store ↔ Worker -->
-  <line x1="460" y1="310" x2="470" y2="310" stroke="#27ae60" stroke-width="1.5" marker-end="url(#arrowGreen)" marker-start="url(#arrowGreenR)"/>
+  <line x1="460" y1="320" x2="470" y2="320" stroke="#27ae60" stroke-width="1.5" marker-end="url(#arrowGreen)" marker-start="url(#arrowGreenR)"/>
 
-  <!-- ───── LEGEND ───── -->
-  <rect x="30" y="430" width="260" height="110" rx="8" fill="#fff" stroke="#ccc" stroke-width="1.2"/>
-  <text x="160" y="448" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Key flows</text>
-  <text x="44" y="466" font-size="10" fill="#555">1. User configures → preview count shown</text>
-  <text x="44" y="481" font-size="10" fill="#555">2. Start → job_id returned in ms</text>
-  <text x="44" y="496" font-size="10" fill="#555">3. Worker paginates &amp; batches mutations</text>
-  <text x="44" y="511" font-size="10" fill="#555">4. Pipeline: fetch page N+1 while updating N</text>
-  <text x="44" y="526" font-size="10" fill="#555">5. Frontend polls every 1s → live progress</text>
+  <!-- Backend → monday-code server -->
+  <line x1="440" y1="540" x2="440" y2="590" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+  <text x="455" y="568" font-size="9" fill="#9b59b6">hosted on</text>
+
+  <!-- Frontend → CDN -->
+  <line x1="140" y1="400" x2="140" y2="590" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+  <text x="155" y="500" font-size="9" fill="#9b59b6">served by</text>
+
+  <!-- Job Store → Storage API -->
+  <line x1="405" y1="388" x2="405" y2="560" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="405" y1="560" x2="700" y2="590" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+  <text x="530" y="555" font-size="9" fill="#9b59b6">persists to</text>
 
   <!-- Arrow markers -->
   <defs>
@@ -139,6 +186,9 @@
     </marker>
     <marker id="arrowGreenR" markerWidth="8" markerHeight="8" refX="2" refY="3" orient="auto-start-reverse">
       <path d="M0,0 L0,6 L8,3 z" fill="#27ae60"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#9b59b6"/>
     </marker>
   </defs>
 
